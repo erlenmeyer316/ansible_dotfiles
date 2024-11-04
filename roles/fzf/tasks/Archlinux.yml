@@ -1,0 +1,7 @@
+---
+- name: "Git | {{ ansible_distribution }} | Install git"
+  ansible.builtin.pacman:
+    name:
+      - fzf
+    state: present
+  become: true
