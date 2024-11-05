@@ -1,7 +1,10 @@
 default_roles:
   - git
   - fzf
-  #- system
+  - starship
+  - fonts
+  - neofetch
+    #- system
   #- 1password
   #- aldente
   #- asciiquarium

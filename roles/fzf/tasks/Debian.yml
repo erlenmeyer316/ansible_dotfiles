@@ -5,6 +5,13 @@
     state: absent
   become: true
 
+- name: "Git |  Install git"
+  ansible.builtin.apt:
+    name:
+      - git
+    state: present
+  become: true
+
 - name: "FZF | Clone Latest Version"
   ansible.builtin.git:
     repo: https://github.com/junegunn/fzf.git
