@@ -11,9 +11,9 @@ Vagrant.configure("2") do |config|
     debian.vm.box = "debian/bookworm64"
   end
 
-  #config.vm.define "arch" do |arch|
-  #  arch.vm.box = "archlinux/archlinux"
-  #end
+  config.vm.define "arch" do |arch|
+    arch.vm.box = "archlinux/archlinux"
+  end
 
   #config.vm.define "macos" do |macos|
   #  macos.vm.box = "ramsey/macos-catalina"

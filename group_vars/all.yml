@@ -4,6 +4,7 @@ default_roles:
   - starship
   - fonts
   - neofetch
+  - bash
     #- system
   #- 1password
   #- aldente
