@@ -6,6 +6,8 @@ default_roles:
   - neofetch
   - bash
   - ranger
+  - ripgrep
+  - w3m
     #- system
   #- 1password
   #- aldente
