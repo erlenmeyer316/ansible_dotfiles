@@ -1,0 +1,6 @@
+---
+- name: "Ranger | Debian | Install ranger"
+  ansible.builtin.apt:
+    name: ranger
+    state: present
+  become: true

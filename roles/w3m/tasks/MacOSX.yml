@@ -1,0 +1,5 @@
+---
+- name: "w3m | MacOSX | Install w3m"
+  community.general.homebrew:
+    name: w3m
+    state: present

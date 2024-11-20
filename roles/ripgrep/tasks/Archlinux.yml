@@ -1,0 +1,6 @@
+---
+- name: "ripgrep | Arch | Install ripgrep"
+  ansible.builtin.pacman:
+    name: ripgrep
+    state: present
+  become: true

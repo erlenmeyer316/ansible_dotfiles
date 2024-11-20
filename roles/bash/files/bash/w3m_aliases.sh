@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+if command -v w3m > /dev/null 2>&1; then
+    alias web="w3m"
+fi

@@ -1,0 +1,6 @@
+---
+- name: "Ranger | Arch | Install ranger"
+  ansible.builtin.pacman:
+    name: ranger
+    state: present
+  become: true

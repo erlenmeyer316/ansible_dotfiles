@@ -1,0 +1,33 @@
+---
+- name: "{{ role_name }} | Checking for Distribution Config: {{ ansible_distribution }}"
+  ansible.builtin.stat:
+    path: "{{ role_path }}/tasks/{{ ansible_distribution }}.yml"
+  register: distribution_config
+
+- name: "{{ role_name }} | Run Tasks: {{ ansible_distribution }}"
+  ansible.builtin.include_tasks: "{{ ansible_distribution }}.yml"
+  when: distribution_config.stat.exists
+
+- name: "Ranger | {{ ansible_distribution }} | Ensure .config directory exists"
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.config/ranger"
+    state: directory
+    mode: "0755"
+
+- name: "Ranger | {{ ansible_distribution }} | Copy config files"
+  ansible.builtin.copy:
+    src: commands.py
+    dest: "{{ ansible_user_dir }}/.config/ranger/commands.py"
+    mode: "0644"  
+  ansible.builtin.copy:
+    src: commands_full.py
+    dest: "{{ ansible_user_dir }}/.config/ranger/commands_full.py"
+    mode: "0644"  
+  ansible.builtin.copy:
+    src: rc.conf
+    dest: "{{ ansible_user_dir }}/.config/ranger/rc.conf"
+    mode: "0644"  
+  ansible.builtin.copy:
+    src: rifle.conf
+    dest: "{{ ansible_user_dir }}/.config/ranger/rifle.conf"
+    mode: "0644"

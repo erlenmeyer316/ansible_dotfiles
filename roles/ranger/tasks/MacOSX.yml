@@ -1,0 +1,5 @@
+---
+- name: "Ranger | MacOSX | Install ranger"
+  community.general.homebrew:
+    name: ranger
+    state: present

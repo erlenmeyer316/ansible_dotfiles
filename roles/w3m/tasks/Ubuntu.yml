@@ -1,0 +1,6 @@
+---
+- name: "w3m | Ubuntu | Install w3m"
+  ansible.builtin.apt:
+    name: w3m
+    state: present
+  become: true

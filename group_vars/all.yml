@@ -5,6 +5,7 @@ default_roles:
   - fonts
   - neofetch
   - bash
+  - ranger
     #- system
   #- 1password
   #- aldente

@@ -1,0 +1,6 @@
+---
+- name: "w3m | Arch | Install w3m"
+  ansible.builtin.pacman:
+    name: w3m
+    state: present
+  become: true

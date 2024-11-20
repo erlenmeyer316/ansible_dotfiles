@@ -1,0 +1,6 @@
+---
+- name: "w3m | Debian | Install w3m"
+  ansible.builtin.apt:
+    name: w3m
+    state: present
+  become: true

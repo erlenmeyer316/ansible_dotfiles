@@ -1,0 +1,6 @@
+---
+- name: "Ranger | Ubuntu | Install ranger"
+  ansible.builtin.apt:
+    name: ranger
+    state: present
+  become: true
