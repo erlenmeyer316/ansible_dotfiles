@@ -9,6 +9,10 @@
       state: latest
     become: true  
 
+- name: Include variables
+  include_vars:
+    file: Debian.yml
+
 - name: "Ensure old neovim from repository is absent."
   ansible.builtin.apt:
     name: neovim
