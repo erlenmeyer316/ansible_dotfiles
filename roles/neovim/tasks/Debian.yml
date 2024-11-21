@@ -7,11 +7,13 @@
       name:
         - libfuse2
       state: latest
+    become: true  
 
 - name: "Ensure old neovim from repository is absent."
   ansible.builtin.apt:
     name: neovim
     state: absent
+  become: true
 
 - name: "Landing place for nvim download exists."
   ansible.builtin.file:
