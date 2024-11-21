@@ -12,7 +12,6 @@ for file in $HOME/.config/bash/*.sh; do
   source "$file"
 done
 
-[ -f ~/.fzf.bash ]   && source ~/.fzf.bash
 
 greetings="neofetch nerdfetch"
 # if greeting bin exists, run it and stop evaluating the rest
@@ -25,4 +24,3 @@ if [[ -z "$TMUX" ]]; then
   done
 fi
 
-eval "$(starship init bash)"

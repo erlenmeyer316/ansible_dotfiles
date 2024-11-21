@@ -8,6 +8,7 @@ default_roles:
   - ranger
   - ripgrep
   - w3m
+  - neovim
     #- system
   #- 1password
   #- aldente

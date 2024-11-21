@@ -1,0 +1,14 @@
+---
+- name: "Neovim | {{ ansible_distribution }} | Dependencies"
+  ansible.builtin.apt:
+    name:
+      - cmake
+      - curl
+      - pkg-config
+      - libtool
+      - unzip
+      - ansible-lint
+      - ripgrep
+      - neovim
+    state: present
+  become: true
