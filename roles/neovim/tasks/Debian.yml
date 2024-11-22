@@ -1,13 +1,13 @@
 ---
-#- when: ansible_architecture == "x86_64"
-#  block:
-#
-#  - name: "Ensure FUSE installed for using appimages."
-#    ansible.builtin.apt:
-#      name:
-#        - libfuse2
-#      state: latest
-#    become: true  
+- when: ansible_architecture == "x86_64"
+  block:
+
+  - name: "Ensure FUSE installed for using appimages."
+    ansible.builtin.apt:
+      name:
+        - fuse
+      state: latest
+    become: true  
 
 - name: Include variables
   include_vars:
