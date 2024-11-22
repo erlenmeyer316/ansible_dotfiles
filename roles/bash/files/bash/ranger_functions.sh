@@ -21,4 +21,10 @@ ranger_cd() {
 }
 
 # This binds Ctrl-O to ranger-cd:
+if [ $(command -v "ranger_cd") ]; then
+    alias fm="ranger_cd"
+    alias files="ranger_cd"
+    alias r="ranger_cd"
+    alias cdd="ranger_cd"
+fi
 #bind '"\C-o":"ranger-cd\C-m"'
