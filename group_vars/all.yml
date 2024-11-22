@@ -9,6 +9,7 @@ default_roles:
   - ripgrep
   - w3m
   - neovim
+  - tmux
     #- system
   #- 1password
   #- aldente
