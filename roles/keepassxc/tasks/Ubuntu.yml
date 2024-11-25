@@ -1,0 +1,6 @@
+---
+- name: "Keepassxc | Ubuntu | Install keepassxc"
+  ansible.builtin.apt:
+    name: keepassxc 
+    state: present
+  become: true

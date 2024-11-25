@@ -1,0 +1,5 @@
+---
+- name: "Keepassxc | MacOSX | Install keepassxc"
+  community.general.homebrew:
+    name: keepassxc 
+    state: present

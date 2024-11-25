@@ -1,0 +1,12 @@
+---
+- name: Detect Keepassxc
+  ansible.builtin.command:
+    cmd: which keepass-cli
+  changed_when: false
+  failed_when: false
+  register: keepassxc_installed
+
+- name: Register Keepassxc
+  ansible.builtin.set_fact:
+    keepassxc_installed: "{{ keepassxc_installed.rc == 0 }}"
+  when: keepassxc_installed.rc == 0

@@ -10,6 +10,7 @@ default_roles:
   - w3m
   - neovim
   - tmux
+  - keepassxc
     #- system
   #- 1password
   #- aldente

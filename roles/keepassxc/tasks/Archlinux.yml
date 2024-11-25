@@ -1,0 +1,6 @@
+---
+- name: "keepassxc | Arch | Install keepassxc"
+  ansible.builtin.pacman:
+    name: keepassxc
+    state: present
+  become: true
