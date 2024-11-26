@@ -1,0 +1,7 @@
+---
+- name: "Offlineimap | MacOSX | Install offlineimap"
+  community.general.homebrew:
+    name: 
+      - offlineimap
+      - neomutt
+    state: present

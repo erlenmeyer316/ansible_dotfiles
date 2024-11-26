@@ -11,11 +11,9 @@ default_roles:
   - neovim
   - tmux
   - keepassxc
-    #- system
-  #- 1password
+  #- system
   #- aldente
   #- asciiquarium
-  #- bash
   #- bat
   #- btop
   #- discord
@@ -29,13 +27,10 @@ default_roles:
   #- k8s
   #- k9s
   #- kitty
-  #- lazygit
   #- lsd
   #- lua
   #- nala
   #- ncdu
-  #- neofetch
-  #- neovim
   #- nerdfetch
   #- npm
   #- nvm
@@ -44,23 +39,19 @@ default_roles:
   #- pwsh
   #- python
   #- raycast
-  ## - ruby
-  ## - rust
   #- slides
   #- spotify
   #- ssh
   #- sshfs
-  #- starship
   #- taskfile
   #- terraform
   #- terragrunt
   #- tldr
   #- tmate
-  #- tmux
-  # - tshark
+  #- tshark
   #- warp
   #- whalebrew
-  # - zellij
+  #- zellij
   #- zoxide
   #- zsh
 

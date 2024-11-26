@@ -1,0 +1,23 @@
+~/.offlineimaprc
+----------------
+[general]
+metadata = ~/.offlineimap
+accounts = Posteo
+socktimeout = 60
+
+[Account posteo]
+localrepository = local-posteo
+remoterepository = remote-posteo
+
+[Repository local-posteo]
+type = Maildir
+localfolders = ~/.mail/posteo
+
+[Repository remote-posteo]
+type = IMAP
+remotehost = imap.site.com # edit this
+remoteuser = myusername # edit this
+remotepass = mypassword # edit this
+ssl = yes
+realdelete = no
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt

@@ -1,0 +1,8 @@
+---
+- name: "Offlineimap| Debian | Install offlineimap"
+  ansible.builtin.apt:
+    name: 
+      - offlineimap
+      - neomutt
+    state: present
+  become: true
