@@ -43,8 +43,7 @@ set -e
 ##########################
 # Paths
 ##########################
-# No secrets are currently being managed 
-#VAULT_SECRET_FILE="$HOME/.ansible-vault/vault.secret"
+KPXC_VAULT="$HOME/SynologyDrive/Passwords.kdbx"
 
 DOTFILES_LOG="$HOME/.dotfiles.log"
 DOTFILES_DIR="$HOME/.dotfiles"
@@ -261,8 +260,8 @@ function confirmVaultAccess() {
   __task "Checking for keepassxc-cli"
   if keepassxc-cli --version >/dev/null 2>&1; then
     KPXC_INSTALLED=true
-    _cmd "keepassxc-cli "
-    OP_AUTHENTICATED=true
+    keepassxc-cli db-info $KPXC_VAULT
+    KPXC_AUTHENTICATED=true
   fi
 }
 
