@@ -262,10 +262,10 @@ function confirmVaultAccess() {
   if keepassxc-cli --version >/dev/null 2>&1; then
     KPXC_INSTALLED=true
     if [[ -n "$KPXC_VAULT" ]] && [[ -n $KPXC_PW ]]; then
-	echo "${KPXC_PW}" | keepassxc-cli db-info -q "${KPXC_VAULT} > /dev/null"
-	if [ $? -eq 0 ]; then
-    	    KPXC_AUTHENTICATED=true
-	fi
+      local KPXC_AUTH_TEST=$(echo "${KPXC_PW}" | keepassxc-cli db-info -q "${KPXC_VAULT}" | grep -o "${KPXC_VAULT}")
+      if [ $KPXC_AUTH_TEST -eq $KPXV_VAULT ]; then
+        KPXC_AUTHENTICATED=true
+      fi
     fi
   fi
 }
@@ -329,7 +329,7 @@ if [[ -n $KPXC_INSTALLED ]]; then
 #    rm -f $VAULT_SECRET_FILE
     ansible-playbook "$DOTFILES_DIR/main.yml" "$@"
   else
-    printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for 1Password CLI: Unable to Authenticate with 1Password.${NC}\n"
+    printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc.${NC}\n"
   fi
 fi
 
