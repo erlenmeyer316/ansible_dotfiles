@@ -263,7 +263,7 @@ function confirmVaultAccess() {
     KPXC_INSTALLED=true
     if [[ -n "$KPXC_VAULT" ]] && [[ -n $KPXC_PW ]]; then
       local KPXC_AUTH_TEST=$(echo "${KPXC_PW}" | keepassxc-cli db-info -q "${KPXC_VAULT}" | grep -o "${KPXC_VAULT}")
-      if [ $KPXC_AUTH_TEST -eq $KPXV_VAULT ]; then
+      if [[ $KPXC_AUTH_TEST -eq $KPXV_VAULT ]]; then
         KPXC_AUTHENTICATED=true
       fi
     fi
