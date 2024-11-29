@@ -58,8 +58,8 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 if [ -f "${ENV_FILE}" ]; then
     set -a; source "${ENV_FILE}"; set +a;
 fi
-KPXC_INSTALLED=false
-KPXC_AUTHENTICATED=false
+KPXC_INSTALLED=
+KPXC_AUTHENTICATED=
 ID=""
 
 # _header colorize the given argument with spacing
