@@ -266,7 +266,6 @@ function confirmVaultAccess() {
       if [[ -n "${KPXC_AUTH_TEST}" ]]; then
 	KPXC_AUTHENTICATED=true
       fi
-      exit
     fi
   fi
 }
