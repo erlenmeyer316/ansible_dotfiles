@@ -265,8 +265,9 @@ function confirmVaultAccess() {
       local KPXC_AUTH_TEST=$(echo "${KPXC_PW}" | keepassxc-cli db-info -q "${KPXC_VAULT}" | grep -o "${KPXC_VAULT}")
       echo "AUTH TEST: ${KPXC_AUTH_TEST}"
       if [[ -n "${KPXC_AUTH_TEST}" ]]; then
-        echo "FARTS AND SHITS"
 	KPXC_AUTHENTICATED=true
+      else
+        echo "FARTS AND SHITS"
       fi
       exit
     fi
