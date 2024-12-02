@@ -58,8 +58,8 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 if [ -f "${ENV_FILE}" ]; then
     set -a; source "${ENV_FILE}"; set +a;
 fi
-KPXC_INSTALLED=
-KPXC_AUTHENTICATED=
+KPXC_INSTALLED=0
+KPXC_AUTHENTICATED=0
 ID=""
 
 # _header colorize the given argument with spacing
@@ -260,11 +260,11 @@ update_ansible_galaxy() {
 function confirmVaultAccess() {
   __task "Checking for Keepassxc CLI"
   if keepassxc-cli --version >/dev/null 2>&1; then
-    KPXC_INSTALLED=true
+    KPXC_INSTALLED=1
     if [[ -n "$KPXC_VAULT" ]] && [[ -n $KPXC_PW ]]; then
       local KPXC_AUTH_TEST=$(echo "${KPXC_PW}" | keepassxc-cli db-info -q "${KPXC_VAULT}" | grep -o "${KPXC_VAULT}")
       if [[ -n "${KPXC_AUTH_TEST}" ]]; then
-	KPXC_AUTHENTICATED=true
+	KPXC_AUTHENTICATED=1
       fi
     fi
   fi
@@ -323,8 +323,8 @@ update_ansible_galaxy $ID
 confirmVaultAccess
 
 
-if [[ -n $KPXC_INSTALLED ]]; then
-  if [[ -n $KPXC_AUTHENTICATED ]]; then
+if [[ $KPXC_INSTALLED -eq 1 ]]; then
+  if [[ $KPXC_AUTHENTICATED -eq 1 ]]; then
     printf "${OVERWRITE}${LGREEN} [✓]  ${LGREEN}Checking for Keepassxc CLI: Keepassxc Authentication successful! ☕${NC}\n"
 #    rm -f $VAULT_SECRET_FILE
     ansible-playbook "$DOTFILES_DIR/main.yml" "$@"
