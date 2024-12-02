@@ -14,7 +14,7 @@
 - name: "Bash | Create ssh-agent.pid"
   ansible.builtin.copy:
     src: "ssh-agent.pid"
-    dest: "{{ ansible_user_dir }}/.profile"
+    dest: "{{ ansible_user_dir }}/ssh-agent.pid"
     mode: "0644"
 
 - name: "Bash | Copy custom bash config"
