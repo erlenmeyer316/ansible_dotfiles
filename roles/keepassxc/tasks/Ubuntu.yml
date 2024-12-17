@@ -1,6 +1,8 @@
 ---
 - name: "Keepassxc | Ubuntu | Install keepassxc"
   ansible.builtin.apt:
-    name: keepassxc 
+    pkg: 
+    - keepassxc 
+    - davfs2
     state: present
   become: true

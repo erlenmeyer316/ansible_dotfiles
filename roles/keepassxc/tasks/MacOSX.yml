@@ -1,5 +1,7 @@
 ---
 - name: "Keepassxc | MacOSX | Install keepassxc"
   community.general.homebrew:
-    name: keepassxc 
+    pkg: 
+    - keepassxc
+    - davfs2
     state: present
