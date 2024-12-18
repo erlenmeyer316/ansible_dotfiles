@@ -341,20 +341,20 @@ update_ansible_galaxy $ID
 confirmVaultAccess
 
 
-if [[ $KPXC_INSTALLED -eq 1 ]]; then
-  if [[ $KPXC_AUTHENTICATED -eq 1 ]]; then
-    printf "${OVERWRITE}${LGREEN} [✓]  ${LGREEN}Checking for Keepassxc CLI: Keepassxc Authentication successful! ☕${NC}\n"
-     if ! [[ -f "$KPXC_DIR/conf" ]]; then
-	printf "$KPXC_PW" > "$KPXC_DIR/conf.tmp"
-	openssl pkeyutl -encrypt -pubin -inkey "${SSL_DIR}/cert.pub" -in "${KPXC_DIR}/conf.tmp" -out "${KPXC_DIR}/conf"
-	rm -rf "${KPXC_DIR}/conf.tmp"
-     fi
+#if [[ $KPXC_INSTALLED -eq 1 ]]; then
+#  if [[ $KPXC_AUTHENTICATED -eq 1 ]]; then
+#    printf "${OVERWRITE}${LGREEN} [✓]  ${LGREEN}Checking for Keepassxc CLI: Keepassxc Authentication successful! ☕${NC}\n"
+#     if ! [[ -f "$KPXC_DIR/conf" ]]; then
+#	printf "$KPXC_PW" > "$KPXC_DIR/conf.tmp"
+#	openssl pkeyutl -encrypt -pubin -inkey "${SSL_DIR}/cert.pub" -in "${KPXC_DIR}/conf.tmp" -out "${KPXC_DIR}/conf"
+#	rm -rf "${KPXC_DIR}/conf.tmp"
+#     fi
     ansible-playbook "$DOTFILES_DIR/main.yml" "$@"
-    unset $KPXC_PW
-  else
-    printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc.\n      Please verify ${ENV_FILE} exists and configured correctly.\n      If it does not exists, you can rerun this script to generate it.${NC}\n"
-  fi
-fi
+#    unset $KPXC_PW
+#  else
+#    printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc.\n      Please verify ${ENV_FILE} exists and configured correctly.\n      If it does not exists, you can rerun this script to generate it.${NC}\n"
+#  fi
+#fi
 
 popd 2>&1 > /dev/null
 
