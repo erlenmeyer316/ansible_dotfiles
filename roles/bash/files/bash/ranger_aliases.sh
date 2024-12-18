@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 if [ $(command -v "ranger") ]; then
-    alias ranger="ranger"
+    alias ranger='ranger'
 fi
