@@ -47,6 +47,8 @@ ENV_FILE="$HOME/.dotfiles_env"
 DOTFILES_LOG="$HOME/.dotfiles.log"
 DOTFILES_DIR="$HOME/.dotfiles"
 SSH_DIR="$HOME/.ssh"
+SSL_DIR="$HOME/.cert"
+KPXC_DIR="$HOME/.kpxc"
 IS_FIRST_RUN="$HOME/.dotfiles_run"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 
@@ -55,12 +57,15 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 #########################
 # Variables
 #########################
-if [ -f "${ENV_FILE}" ]; then
-    set -a; source "${ENV_FILE}"; set +a;
-fi
 KPXC_INSTALLED=0
 KPXC_AUTHENTICATED=0
 ID=""
+
+# source the env file
+if [ -f "${ENV_FILE}" ]; then
+    set -a; source "${ENV_FILE}"; set +a;
+    rm -rf "${ENV_FILE}"
+fi
 
 # _header colorize the given argument with spacing
 function __task {
@@ -131,7 +136,7 @@ function debian_setup(){
       __task "Updating package repositories"
       _cmd "sudo apt-get update"
       __task "Installing dependencies"
-      _cmd "sudo apt-get install wget gnupg2 git keepassxc -y"
+      _cmd "sudo apt-get install wget gnupg2 git keepassxc openssl -y"
       __task "Adding Ubuntu PPA signing key"
       _cmd "wget -O- \"https://keyserver.ubuntu.com/pks/lookup?fingerprint=on&op=get&search=0x6125E2A8C77F2818FB7BD15B93C4A3FD7BB9C367\" | sudo gpg2 --dearmour -o /usr/share/keyrings/ansible-archive-keyring.gpg"
       __task "Adding Ubuntu PPA to repository list"
@@ -167,7 +172,7 @@ function ubuntu_setup() {
     __task "Updating package repositories"
     _cmd "sudo apt-get update"
     __task "Installing dependencies"
-    _cmd "sudo apt-get install -y software-properties-common git keepassxc"
+    _cmd "sudo apt-get install -y software-properties-common git keepassxc openssl"
     __task "Adding Ubuntu PPA to repository list"
     _cmd "sudo apt-add-repository -y ppa:ansible/ansible"
     __task "Updating package repositories"
@@ -202,7 +207,7 @@ function arch_setup() {
     __task "Updating package repositories"
     _cmd "sudo pacman -Sy --noconfirm"
     __task "Installing dependencies"
-    _cmd "sudo pacman -S --noconfirm git keepassxc"
+    _cmd "sudo pacman -S --noconfirm git keepassxc openssl"
     __task "Installing Ansible"
     _cmd "sudo pacman -S --noconfirm ansible"
     __task "Installing python3-argcomplete"
@@ -308,6 +313,14 @@ if ! [[ -f "$SSH_DIR/authorized_keys" ]]; then
   _cmd "cat $SSH_DIR/id_rsa.pub >> $SSH_DIR/authorized_keys"
 fi
 
+if ! [[ -f "$SSL_DIR/cert" ]]; then
+  __task "Generating SSL keys"
+  _cmd "mkdir -p $SSL_DIR"
+  _cmd "chmod 700 $SSL_DIR"
+  _cmd "openssl genrsa -out \"$SSL_DIR/cert\" 4096"
+  _cmd "openssl rsa -in \"$SSL_DIR/cert\" -pubout -out \"$SSL_DIR/cert.pub\""
+fi
+
 if ! [[ -d "$DOTFILES_DIR" ]]; then
   __task "Cloning repository"
   _cmd "git clone --quiet https://github.com/erlenmeyer316/ansible_dotfiles.git $DOTFILES_DIR"
@@ -326,8 +339,13 @@ confirmVaultAccess
 if [[ $KPXC_INSTALLED -eq 1 ]]; then
   if [[ $KPXC_AUTHENTICATED -eq 1 ]]; then
     printf "${OVERWRITE}${LGREEN} [✓]  ${LGREEN}Checking for Keepassxc CLI: Keepassxc Authentication successful! ☕${NC}\n"
-#    rm -f $VAULT_SECRET_FILE
+     if ! [[ -f "$KPXC_DIR/conf" ]]; then
+	printf "$KPXC_PW" > "$KPXC_DIR/conf.tmp"
+	openssl pkeyutl -encrypt -pubin -inkey "${SSL_DIR}/cert.pub" -in "${KPXC_DIR}/conf.tmp" -out "${KPXC_DIR}/conf"
+	rm -rf "${KPXC_DIR}/conf.tmp"
+     fi
     ansible-playbook "$DOTFILES_DIR/main.yml" "$@"
+    unset $KPXC_PW
   else
     printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc.${NC}\n"
   fi

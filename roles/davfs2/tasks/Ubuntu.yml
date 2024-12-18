@@ -1,0 +1,6 @@
+---
+- name: "davfs2 | Ubuntu | Install davfs2"
+  ansible.builtin.apt:
+    name: davfs2
+    state: present
+  become: true
