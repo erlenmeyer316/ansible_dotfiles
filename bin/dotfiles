@@ -65,6 +65,8 @@ ID=""
 if [ -f "${ENV_FILE}" ]; then
     set -a; source "${ENV_FILE}"; set +a;
     rm -rf "${ENV_FILE}"
+else
+    printf "KPXC_PW=\nKPXC_VAULT=\nKPXC_WEBDAV_URL=\nKPXC_WEBDAV_USER=\nKPXC_WEBDAV_PW=\n" > "${ENV_FILE}"
 fi
 
 # _header colorize the given argument with spacing
@@ -347,7 +349,7 @@ if [[ $KPXC_INSTALLED -eq 1 ]]; then
     ansible-playbook "$DOTFILES_DIR/main.yml" "$@"
     unset $KPXC_PW
   else
-    printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc.${NC}\n"
+    printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc. Please verify ${DOTFILE_ENV} is correct.${NC}\n"
   fi
 fi
 
