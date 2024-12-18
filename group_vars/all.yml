@@ -11,7 +11,7 @@ default_roles:
   - neovim
   - tmux
   - keepassxc
-  #- davfs2  
+  - davfs2  
   #- system
   #- aldente
   #- asciiquarium
@@ -55,7 +55,12 @@ default_roles:
   #- zellij
   #- zoxide
   #- zsh
-
+  
+  git_user_name: "erlenmeyer316"
+  kpxc:
+    git:
+      user:
+        email: "github.com"
   #git_user_name: "TechDufus"
   #op:
   #git:
