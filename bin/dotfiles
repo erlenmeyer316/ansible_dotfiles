@@ -349,7 +349,7 @@ if [[ $KPXC_INSTALLED -eq 1 ]]; then
     ansible-playbook "$DOTFILES_DIR/main.yml" "$@"
     unset $KPXC_PW
   else
-    printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc. Please verify ${ENV_FILE} is correct.${NC}\n"
+    printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc.\n      Please verify ${ENV_FILE} exists and configured correctly.\n If it does not exists, you can rerun this script to generate it.${NC}\n"
   fi
 fi
 
