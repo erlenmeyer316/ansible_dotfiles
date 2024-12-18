@@ -44,7 +44,7 @@ set -e
 # Paths
 ##########################
 ENV_FILE="$HOME/.dotfiles_env"
-DOTFILES_LOG="$HOME/.local/state/dotfiles.log"
+DOTFILES_LOG="$HOME/.local/state/dotfiles/dotfiles.log"
 DOTFILES_DIR="$HOME/.dotfiles"
 SSH_DIR="$HOME/.ssh"
 SSL_DIR="$HOME/.local/share/ssl"
