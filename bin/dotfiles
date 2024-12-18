@@ -84,6 +84,9 @@ function __task {
 function _cmd {
   #create log if it doesn't exist
   if ! [[ -f $DOTFILES_LOG ]]; then
+    if ! [[ -d "$HOME/.local/state/dotfiles" ]]; then
+       mkdir -p "$HOME/.local/state/dotfiles"
+    fi
     touch $DOTFILES_LOG
   fi
   # empty conduro.log
