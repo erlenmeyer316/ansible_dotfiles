@@ -44,12 +44,12 @@ set -e
 # Paths
 ##########################
 ENV_FILE="$HOME/.dotfiles_env"
-DOTFILES_LOG="$HOME/.dotfiles.log"
+DOTFILES_LOG="$HOME/.local/state/dotfiles.log"
 DOTFILES_DIR="$HOME/.dotfiles"
 SSH_DIR="$HOME/.ssh"
-SSL_DIR="$HOME/.cert"
-KPXC_DIR="$HOME/.kpxc"
-IS_FIRST_RUN="$HOME/.dotfiles_run"
+SSL_DIR="$HOME/.local/share/ssl"
+KPXC_DIR="$HOME/.local/share/kpxc"
+IS_FIRST_RUN="$HOME/.local/state/dotfiles/dotfiles_run"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 
 
@@ -325,7 +325,7 @@ fi
 
 if ! [[ -d "$DOTFILES_DIR" ]]; then
   __task "Cloning repository"
-  _cmd "git clone --quiet https://github.com/erlenmeyer316/ansible_dotfiles.git $DOTFILES_DIR"
+  _cmd "git clone --quiet https://github.com/erlenmeyer316/dotfiles.git $DOTFILES_DIR"
 else
   __task "Updating repository"
   _cmd "git -C $DOTFILES_DIR pull --quiet"
