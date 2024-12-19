@@ -265,11 +265,11 @@ update_ansible_galaxy() {
   _cmd "ansible-galaxy install -r $DOTFILES_DIR/requirements/common.yml $os_requirements"
 }
 
-confirmVaultAccess() {
+function confirmVaultAccess() {
   __task "Checking for Keepassxc CLI"
   if keepassxc-cli --version >/dev/null 2>&1; then
     KPXC_INSTALLED=1
-    if [[ -n "$KPXC_VAULT" ]] && [[ -n $KPXC_PW ]]; then
+    if [[ -n "$KPXC_VAULT_PATH" ]] && [[ -n $KPXC_KEYFILE_PATH ]]; then
       
       keepassxc-cli db-info -q "${KPXC_VAULT_PATH}" --key-file "${KPXC_KEYFILE_PATH}" --no-password
       exit
