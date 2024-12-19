@@ -281,7 +281,7 @@ function confirmVaultAccess() {
 getSecret() {
    local name=$1
    local field=$2
-   local secret=$(keepassxc-cli show -qsa $field --key-file "${KPXC_KEYFILE_PATH} --no-password "${KPXC_VAULT_PATH}" $name)
+   local secret=$(keepassxc-cli show -qsa $field --key-file "${KPXC_KEYFILE_PATH}" --no-password "${KPXC_VAULT_PATH}" $name)
    echo $secret
 }
 
