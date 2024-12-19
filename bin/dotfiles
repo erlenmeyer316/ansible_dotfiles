@@ -290,17 +290,17 @@ generateSSL() {
   local public_cert=$(getSecret "ssl" "public_cert")
   local cert_path=$(getSecret "ssl" "cert_path")
 
-  if ! [[ -d "${cert_path}" ]]; then
+  if ! [[ -d "${cert_path}/" ]]; then
     _cmd "mkdir -p $cert_path"
     _cmd "chmod 700 $cert_path"
   fi	  
 
-  if ! [[ -f "$cert_path/$private_cert" ]]; then
+  if ! [[ -f "${cert_path}/${private_cert}" ]]; then
      _cmd "openssl genrsa -out \"$cert_path/$private_cert\" 4096"
   fi
 
-  if ! [[ -f "$cert_path/$public_cert" ]]; then
-    _cmd "openssl rsa -in \"$certpath/$private_cert\" -pubout -out \"$cert_path/$public_cert\""
+  if ! [[ -f "${cert_path}/${public_cert}" ]]; then
+    _cmd "openssl rsa -in \"${cert_path}/${private_cert}\" -pubout -out \"${cert_path}/${public_cert}\""
   fi
 }
 
