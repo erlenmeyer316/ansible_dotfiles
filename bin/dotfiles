@@ -47,8 +47,6 @@ ENV_FILE="$HOME/.dotfiles_env"
 DOTFILES_LOG="$HOME/.local/state/dotfiles/dotfiles.log"
 DOTFILES_DIR="$HOME/.dotfiles"
 SSH_DIR="$HOME/.ssh"
-SSL_DIR="$HOME/.local/share/ssl"
-KPXC_DIR="$HOME/.local/share/kpxc"
 IS_FIRST_RUN="$HOME/.local/state/dotfiles/dotfiles_run"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 
@@ -64,9 +62,9 @@ ID=""
 # source the env file
 if [ -f "${ENV_FILE}" ]; then
     set -a; source "${ENV_FILE}"; set +a;
-    rm -rf "${ENV_FILE}"
+    #rm -rf "${ENV_FILE}"
 else
-    printf "KPXC_VAULT=Passwords.kdbx\nKPXC_KEYFILE=/home/erlenmeyer316/keyfile.keyx\nKPXC_PATH=/home/erlenmeyer316/\n" > "$ENV_FILE"
+    printf "KPXC_VAULT_PATH=Passwords.kdbx\nKPXC_KEYFILE_PATH=/home/username/keyfile.keyx\n" > "$ENV_FILE"
 fi
 
 # _header colorize the given argument with spacing
@@ -267,16 +265,43 @@ update_ansible_galaxy() {
   _cmd "ansible-galaxy install -r $DOTFILES_DIR/requirements/common.yml $os_requirements"
 }
 
-function confirmVaultAccess() {
+confirmVaultAccess() {
   __task "Checking for Keepassxc CLI"
   if keepassxc-cli --version >/dev/null 2>&1; then
     KPXC_INSTALLED=1
     if [[ -n "$KPXC_VAULT" ]] && [[ -n $KPXC_PW ]]; then
-      local KPXC_AUTH_TEST=$(echo "${KPXC_PW}" | keepassxc-cli db-info -q "${KPXC_VAULT}" | grep -o "${KPXC_VAULT}")
+      local KPXC_AUTH_TEST=$(keepassxc-cli db-info -q "${KPXC_VAULT_PATH}" --key-file "${KPXC_KEYFILE_PATH}" --no-password | grep -o "${KPXC_VAULT_PATH}")
       if [[ -n "${KPXC_AUTH_TEST}" ]]; then
 	KPXC_AUTHENTICATED=1
       fi
     fi
+  fi
+}
+
+getSecret() {
+   local name=$1
+   local field=$2
+
+   local secret=$(keepassxc-cli show "${field}" -qas "${KPXC_VAULT_PATH}" --key-file "${KPXC_KEYFILE_PATH}" --no-password "${name}")
+   echo $secret
+}
+
+generateSSL() {
+  local private_cert=$(getSecret "ssl" "private_cert")
+  local public_cert=$(getSecret "ssl" "public_cert")
+  local cert_path=$(getSecret "ssl" "cert_path")
+
+  if ! [[ -d "${cert_path}" ]]; then
+    _cmd "mkdir -p $cert_path"
+    _cmd "chmod 700 $cert_path"
+  fi	  
+
+  if ! [[ -f "$cert_path/$private_cert" ]]; then
+     _cmd "openssl genrsa -out \"$cert_path/$private_cert\" 4096"
+  fi
+
+  if ! [[ -f "$cert_path/$public_cert" ]]; then
+    _cmd "openssl rsa -in \"$certpath/$private_cert\" -pubout -out \"$cert_path/$public_cert\""
   fi
 }
 
@@ -318,14 +343,6 @@ if ! [[ -f "$SSH_DIR/authorized_keys" ]]; then
   _cmd "cat $SSH_DIR/id_rsa.pub >> $SSH_DIR/authorized_keys"
 fi
 
-if ! [[ -f "$SSL_DIR/cert" ]]; then
-  __task "Generating SSL keys"
-  _cmd "mkdir -p $SSL_DIR"
-  _cmd "chmod 700 $SSL_DIR"
-  _cmd "openssl genrsa -out \"$SSL_DIR/cert\" 4096"
-  _cmd "openssl rsa -in \"$SSL_DIR/cert\" -pubout -out \"$SSL_DIR/cert.pub\""
-fi
-
 if ! [[ -d "$DOTFILES_DIR" ]]; then
   __task "Cloning repository"
   _cmd "git clone --quiet https://github.com/erlenmeyer316/dotfiles.git $DOTFILES_DIR"
@@ -341,20 +358,20 @@ update_ansible_galaxy $ID
 confirmVaultAccess
 
 
-#if [[ $KPXC_INSTALLED -eq 1 ]]; then
-#  if [[ $KPXC_AUTHENTICATED -eq 1 ]]; then
-#    printf "${OVERWRITE}${LGREEN} [✓]  ${LGREEN}Checking for Keepassxc CLI: Keepassxc Authentication successful! ☕${NC}\n"
-#     if ! [[ -f "$KPXC_DIR/conf" ]]; then
-#	printf "$KPXC_PW" > "$KPXC_DIR/conf.tmp"
-#	openssl pkeyutl -encrypt -pubin -inkey "${SSL_DIR}/cert.pub" -in "${KPXC_DIR}/conf.tmp" -out "${KPXC_DIR}/conf"
-#	rm -rf "${KPXC_DIR}/conf.tmp"
-#     fi
-    ansible-playbook "$DOTFILES_DIR/main.yml" "$@"
-#    unset $KPXC_PW
-#  else
-#    printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc.\n      Please verify ${ENV_FILE} exists and configured correctly.\n      If it does not exists, you can rerun this script to generate it.${NC}\n"
-#  fi
-#fi
+if [[ $KPXC_INSTALLED -eq 1 ]]; then
+  if [[ $KPXC_AUTHENTICATED -eq 1 ]]; then
+    printf "${OVERWRITE}${LGREEN} [✓]  ${LGREEN}Checking for Keepassxc CLI: Keepassxc Authentication successful! ☕${NC}\n"
+     #if ! [[ -f "$KPXC_DIR/conf" ]]; then
+     #printf "$KPXC_PW" > "$KPXC_DIR/conf.tmp"
+     #	openssl pkeyutl -encrypt -pubin -inkey "${SSL_DIR}/cert.pub" -in "${KPXC_DIR}/conf.tmp" -out "${KPXC_DIR}/conf"
+     #	rm -rf "${KPXC_DIR}/conf.tmp"
+     #fi
+    #ansible-playbook "$DOTFILES_DIR/main.yml" "$@"
+    #unset $KPXC_PW
+  else
+    printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc.\n      Please verify ${ENV_FILE} exists and configured correctly.\n      If it does not exists, you can rerun this script to generate it.${NC}\n"
+  fi
+fi
 
 popd 2>&1 > /dev/null
 
