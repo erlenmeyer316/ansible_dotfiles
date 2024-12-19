@@ -43,7 +43,7 @@
   when: keepassxc_installed
   block:
     - name: "Keepassxc | Get kpxc.git.secret.email"
-      ansible.builtin.command: "keepassxc-cli show -qs -a {{ kpxc.git.secret.email }} -k {{ kpxc_keyfile_path }} --no-password {{ kpxc_vault_path }} {{ kpxc.git.secret.name }}"
+      ansible.builtin.command: "keepassxc-cli show -qs -a {{ kpxc.git.vault.email }} -k {{ kpxc_keyfile_path }} --no-password {{ kpxc_vault_path }} {{ kpxc.git.vault.secret }}"
       register: kpxc_git_user_email
       changed_when: false
 
