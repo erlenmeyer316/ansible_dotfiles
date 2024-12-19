@@ -49,6 +49,18 @@
         var: run_roles
       tags:
         - always
+    
+    - name: Display vault path
+      ansible.builtin.debug:
+        var: KPXC_VAULT_PATH
+      tags: 
+        - always
+
+    - name: Display keyfile path
+      ansible.builtin.debug:
+        var: KPXC_KEYFILE_PATH
+      tags: 
+        - always
 
     - name: Run roles
       ansible.builtin.include_role:

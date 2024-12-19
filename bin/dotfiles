@@ -44,10 +44,11 @@ set -e
 # Paths
 ##########################
 ENV_FILE="$HOME/.dotfiles_env"
-DOTFILES_LOG="$HOME/.local/state/dotfiles/dotfiles.log"
+DOTFILES_STATE_DIR="$HOME/.local/state/dotfiles"
+DOTFILES_LOG="$DOTFILES_STATE_DIR/dotfiles.log"
 DOTFILES_DIR="$HOME/.dotfiles"
 SSH_DIR="$HOME/.ssh"
-IS_FIRST_RUN="$HOME/.local/state/dotfiles/dotfiles_run"
+IS_FIRST_RUN="$DOTFILES_STATE_DIR/dotfiles_run"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 
 
@@ -254,7 +255,7 @@ function macos_setup() {
   fi  
 }
 
-update_ansible_galaxy() {
+function update_ansible_galaxy() {
   local os=$1
   local os_requirements=""
   __task "Updating Ansible Galaxy"
@@ -265,7 +266,7 @@ update_ansible_galaxy() {
   _cmd "ansible-galaxy install -r $DOTFILES_DIR/requirements/common.yml $os_requirements"
 }
 
-function confirmVaultAccess() {
+function confirm_vault_access() {
   __task "Checking for Keepassxc CLI"
   if keepassxc-cli --version >/dev/null 2>&1; then
     KPXC_INSTALLED=1
@@ -278,18 +279,19 @@ function confirmVaultAccess() {
   fi
 }
 
-getSecret() {
+function get_secret() {
    local name=$1
    local field=$2
    local secret=$(keepassxc-cli show -qsa $field --key-file "${KPXC_KEYFILE_PATH}" --no-password "${KPXC_VAULT_PATH}" $name)
    echo $secret
 }
 
-generateSSL() {
+function generate_SSL() {
   __task "Generating local SSL certs"
-	local private_cert=$(getSecret "ssl" "private_cert")
-  local public_cert=$(getSecret "ssl" "public_cert")
-  local cert_path=$(getSecret "ssl" "cert_path")
+  
+  local private_cert=$(get_secret "ssl" "private_cert")
+  local public_cert=$(get_secret "ssl" "public_cert")
+  local cert_path=$(get_secret "ssl" "cert_path")
 
   if ! [[ -d "${cert_path}/" ]]; then
     _cmd "mkdir -p $cert_path"
@@ -355,20 +357,22 @@ pushd "$DOTFILES_DIR" 2>&1 > /dev/null
 update_ansible_galaxy $ID
 
 # No password managers are being used at this time
-confirmVaultAccess
+confirm_vault_access
 
 
 if [[ $KPXC_INSTALLED -eq 1 ]]; then
   if [[ $KPXC_AUTHENTICATED -eq 1 ]]; then
     printf "${OVERWRITE}${LGREEN} [✓]  ${LGREEN}Checking for Keepassxc CLI: Keepassxc Authentication successful! ☕${NC}\n"
-     generateSSL
+     generate_SSL
      #if ! [[ -f "$KPXC_DIR/conf" ]]; then
      #printf "$KPXC_PW" > "$KPXC_DIR/conf.tmp"
      #	openssl pkeyutl -encrypt -pubin -inkey "${SSL_DIR}/cert.pub" -in "${KPXC_DIR}/conf.tmp" -out "${KPXC_DIR}/conf"
      #	rm -rf "${KPXC_DIR}/conf.tmp"
      #fi
-    #ansible-playbook "$DOTFILES_DIR/main.yml" "$@"
-    #unset $KPXC_PW
+    ansible-playbook --extra-vars '{"KPXC_VAULT_PATH":"${KPXC_VAULT_PATH}", "KPXC_KEYFILE_PATH":"${KPXC_KEYFILE_PATH}"}'  "$DOTFILES_DIR/main.yml" "$@"
+    unset $KPXC_VAULT_PATH
+    unset $KPCX_KEYFILE_PATH
+    # delete vault and keyfile
   else
     printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc.\n      Please verify ${ENV_FILE} exists and configured correctly.\n      If it does not exists, you can rerun this script to generate it.${NC}\n"
   fi
@@ -379,8 +383,8 @@ popd 2>&1 > /dev/null
 if ! [[ -f "$IS_FIRST_RUN" ]]; then
   echo -e "${CHECK_MARK} ${GREEN}First run complete!${NC}"
   echo -e "${ARROW} ${CYAN}Please reboot your computer to complete the setup.${NC}"
-  if ! [[ -d "$HOME/.local/state/dotfiles" ]]; then
-      mkdir -p "$HOME/.local/state/dotfiles"
+  if ! [[ -d "$DOTFILES_STATE_DIR" ]]; then
+      mkdir -p "$DOTFILES_STATE_DIR"
   fi
  
   touch "$IS_FIRST_RUN"
