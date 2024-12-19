@@ -270,9 +270,6 @@ function confirmVaultAccess() {
   if keepassxc-cli --version >/dev/null 2>&1; then
     KPXC_INSTALLED=1
     if [[ -n "$KPXC_VAULT_PATH" ]] && [[ -n $KPXC_KEYFILE_PATH ]]; then
-      
-      keepassxc-cli db-info -q "${KPXC_VAULT_PATH}" --key-file "${KPXC_KEYFILE_PATH}" --no-password
-      exit
       local KPXC_AUTH_TEST=$(keepassxc-cli db-info -q "${KPXC_VAULT_PATH}" --key-file "${KPXC_KEYFILE_PATH}" --no-password | grep -o "${KPXC_VAULT_PATH}")
       if [[ -n "${KPXC_AUTH_TEST}" ]]; then
 	KPXC_AUTHENTICATED=1
@@ -293,6 +290,11 @@ generateSSL() {
   local private_cert=$(getSecret "ssl" "private_cert")
   local public_cert=$(getSecret "ssl" "public_cert")
   local cert_path=$(getSecret "ssl" "cert_path")
+
+  echo $private_cert
+  echo $public_cert
+  echo $cert_path
+  exit
 
   if ! [[ -d "${cert_path}" ]]; then
     _cmd "mkdir -p $cert_path"
@@ -364,6 +366,7 @@ confirmVaultAccess
 if [[ $KPXC_INSTALLED -eq 1 ]]; then
   if [[ $KPXC_AUTHENTICATED -eq 1 ]]; then
     printf "${OVERWRITE}${LGREEN} [✓]  ${LGREEN}Checking for Keepassxc CLI: Keepassxc Authentication successful! ☕${NC}\n"
+     generateSSL
      #if ! [[ -f "$KPXC_DIR/conf" ]]; then
      #printf "$KPXC_PW" > "$KPXC_DIR/conf.tmp"
      #	openssl pkeyutl -encrypt -pubin -inkey "${SSL_DIR}/cert.pub" -in "${KPXC_DIR}/conf.tmp" -out "${KPXC_DIR}/conf"
