@@ -290,11 +290,6 @@ generateSSL() {
   local public_cert=$(getSecret "ssl" "public_cert")
   local cert_path=$(getSecret "ssl" "cert_path")
 
-  echo $private_cert
-  echo $public_cert
-  echo $cert_path
-  exit
-
   if ! [[ -d "${cert_path}" ]]; then
     _cmd "mkdir -p $cert_path"
     _cmd "chmod 700 $cert_path"
