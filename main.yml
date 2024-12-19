@@ -51,7 +51,8 @@
         - always
 
     - name: Display script var
-      shell: echo $DOTFILES_DIR
+      ansible.builtin.debug:
+        msg: "Dotfiles dir: {{ lookup('ansible.builtin.env', 'DOTFILES_DIR', default='Not Found!') }}"
       
       #      ansible.builtin.set_fact:
       #        git_user_email: "{{ op_git_user_email.stdout }}"
