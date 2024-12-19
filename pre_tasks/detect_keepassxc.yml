@@ -1,7 +1,7 @@
 ---
 - name: Detect Keepassxc
   ansible.builtin.command:
-    cmd: which keepass-cli
+    cmd: which keepassxc-cli
   changed_when: false
   failed_when: false
   register: keepassxc_installed
