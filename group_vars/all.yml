@@ -56,11 +56,11 @@ default_roles:
   #- zoxide
   #- zsh
   
-  kpxc:
-    git:
-      - name: "github.com"
-        email: "username"
-        username: "gitconfig_username"
+kpxc:
+  git:
+    - secret: "github.com"
+      email: "username"
+      username: "gitconfig_username"
   #git_user_name: "TechDufus"
   #op:
   #git:
