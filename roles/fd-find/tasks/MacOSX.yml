@@ -1,0 +1,5 @@
+---
+- name: "fd-find | MacOSX | Install fd-find"
+  community.general.homebrew:
+    name: fd-find
+    state: present

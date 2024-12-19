@@ -1,0 +1,6 @@
+---
+- name: "fd-find | Debian | Install fd-find"
+  ansible.builtin.apt:
+    name: fd-find
+    state: present
+  become: true

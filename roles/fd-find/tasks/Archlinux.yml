@@ -1,6 +1,6 @@
 ---
-- name: "fd | Arch | Install fd"
+- name: "fd-find | Arch | Install fd-find"
   ansible.builtin.pacman:
-    name: fd
+    name: fd-find
     state: present
   become: true

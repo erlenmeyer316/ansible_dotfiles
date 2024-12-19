@@ -10,7 +10,7 @@
       - ansible-lint
       - ripgrep
       - fzf
-      - fd
+      - fd-find
       - neovim
       - git
       - tar

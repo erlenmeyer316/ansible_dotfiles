@@ -56,7 +56,7 @@
       - ansible-lint
       - ripgrep
       - fzf
-      - fd
+      - fd-find
       - git
       - tar
       - build-essential
