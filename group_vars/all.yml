@@ -60,8 +60,8 @@ default_roles:
     git:
       user:
         secret: "github.com"
-          email: "username"
-          username: "gitconfig_username"
+          - email: "username"
+          - username: "gitconfig_username"
   #git_user_name: "TechDufus"
   #op:
   #git:
