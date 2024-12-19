@@ -43,7 +43,7 @@ set -e
 ##########################
 # Paths
 ##########################
-ENV_FILE="$HOME/.dotfiles_env"
+DOTFILES_ENV="$HOME/.dotfiles_env"
 DOTFILES_STATE_DIR="$HOME/.local/state/dotfiles"
 DOTFILES_LOG="$DOTFILES_STATE_DIR/dotfiles.log"
 DOTFILES_DIR="$HOME/.dotfiles"
@@ -61,11 +61,11 @@ KPXC_AUTHENTICATED=0
 ID=""
 
 # source the env file
-if [ -f "${ENV_FILE}" ]; then
-    set -a; source "${ENV_FILE}"; set +a;
-    #rm -rf "${ENV_FILE}"
+if [ -f "${DOTFILES_ENV}" ]; then
+    set -a; source "${DOTFILES_ENV}"; set +a;
+    #rm -rf "${DOTFILES_ENV}"
 else
-    printf "KPXC_VAULT_PATH=Passwords.kdbx\nKPXC_KEYFILE_PATH=/home/username/keyfile.keyx\n" > "$ENV_FILE"
+    printf "KPXC_VAULT_PATH=Passwords.kdbx\nKPXC_KEYFILE_PATH=/home/username/keyfile.keyx\n" > "$DOTFILES_ENV"
 fi
 
 # _header colorize the given argument with spacing
@@ -374,7 +374,7 @@ if [[ $KPXC_INSTALLED -eq 1 ]]; then
     unset $KPCX_KEYFILE_PATH
     # delete vault and keyfile
   else
-    printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc.\n      Please verify ${ENV_FILE} exists and configured correctly.\n      If it does not exists, you can rerun this script to generate it.${NC}\n"
+    printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc.\n      Please verify ${DOTFILES_ENV} exists and configured correctly.\n      If it does not exists, you can rerun this script to generate it.${NC}\n"
   fi
 fi
 
