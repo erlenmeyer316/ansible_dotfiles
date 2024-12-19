@@ -40,7 +40,7 @@
 
 # get secret git.email from vault and set fact
 - name: "Git | Reader user.email secret from Keepassxc"
-  when: kpxc_installed
+  when: keepassxc_installed
   block:
     - name: "Keepassxc | Get kpxc.git.secret.email"
       ansible.builtin.command: "keepassxc-cli show -qs -a {{ kpxc.git.secret.email }} -k {{ kpxc_keyfile_path }} --no-password {{ kpxc_vault_path }} {{ kpxc.git.secret }}"
