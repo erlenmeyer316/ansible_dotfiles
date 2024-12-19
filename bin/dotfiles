@@ -282,7 +282,7 @@ getSecret() {
    local name=$1
    local field=$2
 
-   local secret=$(keepassxc-cli show "${field}" -qas "${KPXC_VAULT_PATH}" --key-file "${KPXC_KEYFILE_PATH}" --no-password "${name}")
+   local secret=$(keepassxc-cli show -qas "${field}" "${KPXC_VAULT_PATH}" --key-file "${KPXC_KEYFILE_PATH}" --no-password "${name}")
    echo $secret
 }
 
