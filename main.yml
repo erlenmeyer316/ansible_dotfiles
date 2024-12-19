@@ -49,7 +49,22 @@
         var: run_roles
       tags:
         - always
-   
+
+    - name: Display script var
+      shell: echo $DOTFILES_DIR
+      
+      #      ansible.builtin.set_fact:
+      #        git_user_email: "{{ op_git_user_email.stdout }}"
+      #      no_log: true
+
+      #- name: "Git | Set user.email"
+      #  community.general.git_config:
+      #    name: user.email
+      #    scope: global
+      #    value: "{{ git_user_email }}"
+      #  no_log: true
+
+
     - name: Run roles
       ansible.builtin.include_role:
         apply:
