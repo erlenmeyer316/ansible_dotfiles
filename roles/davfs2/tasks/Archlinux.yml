@@ -1,6 +1,0 @@
----
-- name: "davfs2 | Arch | Install davfs2"
-  ansible.builtin.pacman:
-    name: davfs2
-    state: present
-  become: true
