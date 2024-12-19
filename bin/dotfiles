@@ -270,6 +270,9 @@ confirmVaultAccess() {
   if keepassxc-cli --version >/dev/null 2>&1; then
     KPXC_INSTALLED=1
     if [[ -n "$KPXC_VAULT" ]] && [[ -n $KPXC_PW ]]; then
+      
+      keepassxc-cli db-info -q "${KPXC_VAULT_PATH}" --key-file "${KPXC_KEYFILE_PATH}" --no-password
+      exit
       local KPXC_AUTH_TEST=$(keepassxc-cli db-info -q "${KPXC_VAULT_PATH}" --key-file "${KPXC_KEYFILE_PATH}" --no-password | grep -o "${KPXC_VAULT_PATH}")
       if [[ -n "${KPXC_AUTH_TEST}" ]]; then
 	KPXC_AUTHENTICATED=1
