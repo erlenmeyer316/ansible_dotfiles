@@ -286,7 +286,8 @@ getSecret() {
 }
 
 generateSSL() {
-  local private_cert=$(getSecret "ssl" "private_cert")
+  __task "Generating local SSL certs"
+	local private_cert=$(getSecret "ssl" "private_cert")
   local public_cert=$(getSecret "ssl" "public_cert")
   local cert_path=$(getSecret "ssl" "cert_path")
 
