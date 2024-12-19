@@ -369,7 +369,7 @@ if [[ $KPXC_INSTALLED -eq 1 ]]; then
      #	openssl pkeyutl -encrypt -pubin -inkey "${SSL_DIR}/cert.pub" -in "${KPXC_DIR}/conf.tmp" -out "${KPXC_DIR}/conf"
      #	rm -rf "${KPXC_DIR}/conf.tmp"
      #fi
-    ansible-playbook --extra-vars "{\"KPXC_VAULT_PATH\":\"${KPXC_VAULT_PATH}\", \"KPXC_KEYFILE_PATH\":\"${KPXC_KEYFILE_PATH}\"}"  "$DOTFILES_DIR/main.yml" "$@"
+    ansible-playbook --extra-vars "{\"kpxc_vault_path\":\"${KPXC_VAULT_PATH}\", \"kpxc_keyfile_path\":\"${KPXC_KEYFILE_PATH}\"}"  "$DOTFILES_DIR/main.yml" "$@"
     unset $KPXC_VAULT_PATH
     unset $KPCX_KEYFILE_PATH
     # delete vault and keyfile

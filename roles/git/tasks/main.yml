@@ -38,6 +38,20 @@
     scope: global
     value: true
 
+# get secret git.email from vault and set fact
+- name: "Git | Reader user.email secret from Keepassxc"
+  when: kpxc_installed
+  block:
+    - name: "Keepassxc | Get kpxc.git.secret.email"
+      ansible.builtin.command: "keepassxc-cli show -qs -a {{ kpxc.git.secret.email }} -k {{ kpxc_keyfile_path }} --no-password {{ kpxc_vault_path }} {{ kpxc.git.secret }}"
+      register: kpxc_git_user_email
+      changed_when: false
+
+    - name: "Keepassxc | Set git_user_email"
+      ansible.builtin.set_fact:
+        git_user_email: "{{ kpxc_git_user_email.stdout }}"
+      no_log: true
+
       #- name: "Git | Read user.email secret from 1Password"
       #  when: op_installed
       #  block:
@@ -52,12 +66,12 @@
       #        git_user_email: "{{ op_git_user_email.stdout }}"
       #      no_log: true
 
-      #- name: "Git | Set user.email"
-      #  community.general.git_config:
-      #    name: user.email
-      #    scope: global
-      #    value: "{{ git_user_email }}"
-      #  no_log: true
+- name: "Git | Set user.email"
+  community.general.git_config:
+    name: user.email
+    scope: global
+    value: "{{ git_user_email }}"
+  no_log: true
 
       #- name: "Git | Set user.name"
       #  community.general.git_config:
