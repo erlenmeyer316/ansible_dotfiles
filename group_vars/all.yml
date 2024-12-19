@@ -59,8 +59,8 @@ default_roles:
 kpxc:
   git:
     secret: "git"
-    email: "username"
-    username: "gitconfig_username"
+    email: "email"
+    username: "username"
   #git_user_name: "TechDufus"
   #op:
   #git:
