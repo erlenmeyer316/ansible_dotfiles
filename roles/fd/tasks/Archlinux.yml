@@ -1,0 +1,6 @@
+---
+- name: "fd | Arch | Install fd"
+  ansible.builtin.pacman:
+    name: fd
+    state: present
+  become: true

@@ -1,0 +1,6 @@
+---
+- name: "fd | Ubuntu | Install fd"
+  ansible.builtin.apt:
+    name: fd
+    state: present
+  become: true

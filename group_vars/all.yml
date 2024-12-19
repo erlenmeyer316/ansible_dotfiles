@@ -11,6 +11,7 @@ default_roles:
   - neovim
   - tmux
   - keepassxc
+  - fd
   #- system
   #- aldente
   #- asciiquarium

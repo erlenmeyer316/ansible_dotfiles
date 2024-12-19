@@ -9,7 +9,14 @@
       - unzip
       - ansible-lint
       - ripgrep
-    state: present
+      - fzf
+      - fd
+      - neovim
+      - git
+      - tar
+      - build-essential
+      - libstdc++6
+     state: present
 
 - name: "Neovim | MacOSX | Install"
   community.general.homebrew:

@@ -9,6 +9,12 @@
       - unzip
       - ansible-lint
       - ripgrep
+      - fzf
+      - fd
       - neovim
+      - git
+      - tar
+      - build-essential
+      - libstdc++6
     state: present
   become: true
