@@ -42,9 +42,10 @@
   when: keepassxc_installed
   block:
     - name: "Keepassxc | Get kpxc.git.secret.email"
-      ansible.builtin.shell: "$(echo {{ keepass_psw }} | keepassxc-cli show -qs -a {{ kpxc.git.email }} {{ keepass_dbx }} {{ kpxc.git.secret }})"
+      ansible.builtin.shell: $(echo "{{ keepass_psw }}" | keepassxc-cli show -qs -a {{ kpxc.git.email }} {{ keepass_dbx }} {{ kpxc.git.secret }})
       register: kpxc_git_user_email
       changed_when: false
+      no_log: true
 
     - name: "Keepassxc | Set git_user_email"
       ansible.builtin.set_fact:
@@ -62,9 +63,10 @@
   when: keepassxc_installed
   block:
     - name: "Keepassxc | Get kpxc.git.secret.username"
-      ansible.builtin.shell: "$(echo {{ keepass_psw }} | keepassxc-cli show -qs -a {{ kpxc.git.username }} {{ keepass_dbx }} {{ kpxc.git.secret }})"
+      ansible.builtin.shell: $(echo "{{ keepass_psw }}" | keepassxc-cli show -qs -a {{ kpxc.git.username }} {{ keepass_dbx }} {{ kpxc.git.secret }})
       register: kpxc_git_username
       changed_when: false
+      no_log: true
 
     - name: "Keepassxc | Set git_username"
       ansible.builtin.set_fact:
