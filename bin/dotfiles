@@ -37,7 +37,6 @@ HOT="${ORANGE}\xF0\x9F\x94\xA5${NC}"
 WARNING="${RED}\xF0\x9F\x9A\xA8${NC}"
 RIGHT_ANGLE="${GREEN}\xE2\x88\x9F${NC}"
 
-
 set -e
 
 ##########################
@@ -49,9 +48,7 @@ DOTFILES_LOG="$DOTFILES_STATE_DIR/dotfiles.log"
 DOTFILES_DIR="$HOME/.dotfiles"
 SSH_DIR="$HOME/.ssh"
 IS_FIRST_RUN="$DOTFILES_STATE_DIR/dotfiles_run"
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
-
-
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 #########################
 # Variables
@@ -62,10 +59,12 @@ ID=""
 
 # source the env file
 if [ -f "${DOTFILES_ENV}" ]; then
-    set -a; source "${DOTFILES_ENV}"; set +a;
-    #rm -rf "${DOTFILES_ENV}"
+  set -a
+  source "${DOTFILES_ENV}"
+  set +a
+  #rm -rf "${DOTFILES_ENV}"
 else
-    printf "KPXC_VAULT_PATH=Passwords.kdbx\nKPXC_KEYFILE_PATH=/home/username/keyfile.keyx\n" > "$DOTFILES_ENV"
+  printf "ANSIBLE_KEEPASS_DBX=/home/user/Passwords.kdbx\ANSIBLE_KEEPASS_PSW=secret123\nn" >"$DOTFILES_ENV"
 fi
 
 # _header colorize the given argument with spacing
@@ -84,21 +83,21 @@ function _cmd {
   #create log if it doesn't exist
   if ! [[ -f $DOTFILES_LOG ]]; then
     if ! [[ -d "$HOME/.local/state/dotfiles" ]]; then
-       mkdir -p "$HOME/.local/state/dotfiles"
+      mkdir -p "$HOME/.local/state/dotfiles"
     fi
     touch $DOTFILES_LOG
   fi
   # empty conduro.log
-  > $DOTFILES_LOG
+  >$DOTFILES_LOG
   # hide stdout, on error we print and exit
-  if eval "$1" 1> /dev/null 2> $DOTFILES_LOG; then
+  if eval "$1" 1>/dev/null 2>$DOTFILES_LOG; then
     return 0 # success
   fi
   # read error from log and add spacing
   printf "${OVERWRITE}${LRED} [X]  ${TASK}${LRED}\n"
   while read line; do
     printf "      ${line}\n"
-  done < $DOTFILES_LOG
+  done <$DOTFILES_LOG
   printf "\n"
   # remove log file
   rm $DOTFILES_LOG
@@ -115,25 +114,25 @@ function _task_done {
   _clear_task
 }
 
-function debian_setup(){
+function debian_setup() {
   if ! [ -x "$(command -v ansible)" ]; then
     local UBUNTU_CODENAME=""
-  
+
     case $VERSION_ID in
-      12)
-        UBUNTU_CODENAME=jammy
-        ;;
-      11)
-        UBUNTU_CODENAME=focal
-        ;;
-      10)
-        UBUNTU_CODENAME=bionic
-        ;;
-      *)
-        __task "Unsupported Debian version"
-        _cmd "echo 'Unsupported Debian version'"
-        ;;
-      esac
+    12)
+      UBUNTU_CODENAME=jammy
+      ;;
+    11)
+      UBUNTU_CODENAME=focal
+      ;;
+    10)
+      UBUNTU_CODENAME=bionic
+      ;;
+    *)
+      __task "Unsupported Debian version"
+      _cmd "echo 'Unsupported Debian version'"
+      ;;
+    esac
 
     if [[ $UBUNTU_CODENAME != "" ]]; then
       local APT_PPA_ENTRY="deb [signed-by=/usr/share/keyrings/ansible-archive-keyring.gpg] http://ppa.launchpad.net/ansible/ansible/ubuntu $UBUNTU_CODENAME main"
@@ -148,11 +147,11 @@ function debian_setup(){
       __task "Updating package repositories"
       _cmd "sudo apt-get update"
       __task "Installing Ansible"
-      _cmd "sudo apt-get install ansible -y" 
+      _cmd "sudo apt-get install ansible -y"
       __task "Installing python3-argcomplete"
       _cmd "sudo apt-get install python3-argcomplete"
       _cmd "sudo activate-global-python-argcomplete"
- 
+
       if ! dpkg -s python3 >/dev/null 2>&1; then
         __task "Installing Python3"
         _cmd "sudo apt-get install -y python3"
@@ -162,7 +161,7 @@ function debian_setup(){
         __task "Installing Python3 Pip"
         _cmd "sudo apt-get install -y python3-pip"
       fi
-    
+
       if ! pip3 list | grep watchdog >/dev/null 2>&1; then
         __task "Installing Python3 Watchdog"
         _cmd "sudo apt-get install -y python3-watchdog"
@@ -252,7 +251,7 @@ function macos_setup() {
   if ! [ -x "$(command -v ansible)" ]; then
     __task "Installing Ansible"
     _cmd "brew install ansible"
-  fi  
+  fi
 }
 
 function update_ansible_galaxy() {
@@ -270,25 +269,25 @@ function confirm_vault_access() {
   __task "Checking for Keepassxc CLI"
   if keepassxc-cli --version >/dev/null 2>&1; then
     KPXC_INSTALLED=1
-    if [[ -n "$KPXC_VAULT_PATH" ]] && [[ -n $KPXC_KEYFILE_PATH ]]; then
-      local KPXC_AUTH_TEST=$(keepassxc-cli db-info -q "${KPXC_VAULT_PATH}" --key-file "${KPXC_KEYFILE_PATH}" --no-password | grep -o "${KPXC_VAULT_PATH}")
+    if [[ -n "$ANSIBLE_KEEPASS_DBX" ]] && [[ -n $ANSIBLE_KEEPASS_PSW ]]; then
+      local KPXC_AUTH_TEST=$(keepassxc-cli db-info -q "${ANSIBLE_KEEPASS_DBX}" --key-file "${ANSIBLE_KEEPASS_PSW}" --no-password | grep -o "${KEEPASS_DBX}")
       if [[ -n "${KPXC_AUTH_TEST}" ]]; then
-	KPXC_AUTHENTICATED=1
+        KPXC_AUTHENTICATED=1
       fi
     fi
   fi
 }
 
 function get_secret() {
-   local name=$1
-   local field=$2
-   local secret=$(keepassxc-cli show -qsa $field --key-file "${KPXC_KEYFILE_PATH}" --no-password "${KPXC_VAULT_PATH}" $name)
-   echo $secret
+  local name=$1
+  local field=$2
+  local secret=$(keepassxc-cli show -qsa $field --key-file "${ANSIBLE_KEEPASS_DBX}" --no-password "${ANSIBLE_KEEPASS_PSW}" $name)
+  echo $secret
 }
 
 function generate_SSL() {
   __task "Generating local SSL certs"
-  
+
   local private_cert=$(get_secret "ssl" "private_cert")
   local public_cert=$(get_secret "ssl" "public_cert")
   local cert_path=$(get_secret "ssl" "cert_path")
@@ -296,10 +295,10 @@ function generate_SSL() {
   if ! [[ -d "${cert_path}/" ]]; then
     _cmd "mkdir -p $cert_path"
     _cmd "chmod 700 $cert_path"
-  fi	  
+  fi
 
   if ! [[ -f "${cert_path}/${private_cert}" ]]; then
-     _cmd "openssl genrsa -out \"$cert_path/$private_cert\" 4096"
+    _cmd "openssl genrsa -out \"$cert_path/$private_cert\" 4096"
   fi
 
   if ! [[ -f "${cert_path}/${public_cert}" ]]; then
@@ -318,24 +317,23 @@ fi
 
 __task "Loading Setup for detected OS: $ID"
 case $ID in
-  debian)
-    debian_setup
-    ;;
-  ubuntu)
-    ubuntu_setup
-    ;;
-  arch)
-    arch_setup
-    ;;
-  Darwin)
-    macos_setup
-    ;;
-  *)
-    __task "Unsupported OS"
-    _cmd "echo 'Unsupported OS'"
-    ;;
+debian)
+  debian_setup
+  ;;
+ubuntu)
+  ubuntu_setup
+  ;;
+arch)
+  arch_setup
+  ;;
+Darwin)
+  macos_setup
+  ;;
+*)
+  __task "Unsupported OS"
+  _cmd "echo 'Unsupported OS'"
+  ;;
 esac
-
 
 if ! [[ -f "$SSH_DIR/authorized_keys" ]]; then
   __task "Generating SSH keys"
@@ -353,39 +351,38 @@ else
   _cmd "git -C $DOTFILES_DIR pull --quiet"
 fi
 
-pushd "$DOTFILES_DIR" 2>&1 > /dev/null
+pushd "$DOTFILES_DIR" 2>&1 >/dev/null
 update_ansible_galaxy $ID
 
 # No password managers are being used at this time
 confirm_vault_access
 
-
 if [[ $KPXC_INSTALLED -eq 1 ]]; then
   if [[ $KPXC_AUTHENTICATED -eq 1 ]]; then
     printf "${OVERWRITE}${LGREEN} [✓]  ${LGREEN}Checking for Keepassxc CLI: Keepassxc Authentication successful! ☕${NC}\n"
-     generate_SSL
-     #if ! [[ -f "$KPXC_DIR/conf" ]]; then
-     #printf "$KPXC_PW" > "$KPXC_DIR/conf.tmp"
-     #	openssl pkeyutl -encrypt -pubin -inkey "${SSL_DIR}/cert.pub" -in "${KPXC_DIR}/conf.tmp" -out "${KPXC_DIR}/conf"
-     #	rm -rf "${KPXC_DIR}/conf.tmp"
-     #fi
-    ansible-playbook --extra-vars "{\"kpxc_vault_path\":\"${KPXC_VAULT_PATH}\", \"kpxc_keyfile_path\":\"${KPXC_KEYFILE_PATH}\"}"  "$DOTFILES_DIR/main.yml" "$@"
-    unset $KPXC_VAULT_PATH
-    unset $KPCX_KEYFILE_PATH
+    generate_SSL
+    #if ! [[ -f "$KPXC_DIR/conf" ]]; then
+    #printf "$KPXC_PW" > "$KPXC_DIR/conf.tmp"
+    #	openssl pkeyutl -encrypt -pubin -inkey "${SSL_DIR}/cert.pub" -in "${KPXC_DIR}/conf.tmp" -out "${KPXC_DIR}/conf"
+    #	rm -rf "${KPXC_DIR}/conf.tmp"
+    #fi
+    ansible-playbook --extra-vars "{\"keepass_dbx\":\"${ANSIBLE_KEEPASS_DBX}\", \"keepass_psw\":\"${ANSIBLE_KEEPASS_PSW}\"}" "$DOTFILES_DIR/main.yml" "$@"
+    unset $ANSIBLE_KEEPASS_DBX
+    unset $ANSIBLE_KEEPASS_PSW
     # delete vault and keyfile
   else
     printf "${OVERWRITE}${LRED} [X]  ${LRED}Checking for Keepassxc CLI: Unable to Authenticate with Keepassxc.\n      Please verify ${DOTFILES_ENV} exists and configured correctly.\n      If it does not exists, you can rerun this script to generate it.${NC}\n"
   fi
 fi
 
-popd 2>&1 > /dev/null
+popd 2>&1 >/dev/null
 
 if ! [[ -f "$IS_FIRST_RUN" ]]; then
   echo -e "${CHECK_MARK} ${GREEN}First run complete!${NC}"
   echo -e "${ARROW} ${CYAN}Please reboot your computer to complete the setup.${NC}"
   if ! [[ -d "$DOTFILES_STATE_DIR" ]]; then
-      mkdir -p "$DOTFILES_STATE_DIR"
+    mkdir -p "$DOTFILES_STATE_DIR"
   fi
- 
+
   touch "$IS_FIRST_RUN"
 fi
