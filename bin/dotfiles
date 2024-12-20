@@ -64,7 +64,7 @@ if [ -f "${DOTFILES_ENV}" ]; then
   set +a
   #rm -rf "${DOTFILES_ENV}"
 else
-  printf "ANSIBLE_KEEPASS_DBX=/home/user/Passwords.kdbx\ANSIBLE_KEEPASS_PSW=secret123\nn" >"$DOTFILES_ENV"
+  printf "ANSIBLE_KEEPASS_DBX=/home/user/Passwords.kdbx\nANSIBLE_KEEPASS_PSW=secret123" >"$DOTFILES_ENV"
 fi
 
 # _header colorize the given argument with spacing
@@ -270,7 +270,7 @@ function confirm_vault_access() {
   if keepassxc-cli --version >/dev/null 2>&1; then
     KPXC_INSTALLED=1
     if [[ -n "$ANSIBLE_KEEPASS_DBX" ]] && [[ -n $ANSIBLE_KEEPASS_PSW ]]; then
-      local KPXC_AUTH_TEST=$(keepassxc-cli db-info -q "${ANSIBLE_KEEPASS_DBX}" --key-file "${ANSIBLE_KEEPASS_PSW}" --no-password | grep -o "${KEEPASS_DBX}")
+      local KPXC_AUTH_TEST=$(echo "${ANSIBLE_KEEPASS_PSW}" | keepassxc-cli db-info -q "${ANSIBLE_KEEPASS_DBX}" | grep -o "${ANSIBLE_KEEPASS_DBX}")
       if [[ -n "${KPXC_AUTH_TEST}" ]]; then
         KPXC_AUTHENTICATED=1
       fi
@@ -360,7 +360,7 @@ confirm_vault_access
 if [[ $KPXC_INSTALLED -eq 1 ]]; then
   if [[ $KPXC_AUTHENTICATED -eq 1 ]]; then
     printf "${OVERWRITE}${LGREEN} [✓]  ${LGREEN}Checking for Keepassxc CLI: Keepassxc Authentication successful! ☕${NC}\n"
-    generate_SSL
+    #generate_SSL
     #if ! [[ -f "$KPXC_DIR/conf" ]]; then
     #printf "$KPXC_PW" > "$KPXC_DIR/conf.tmp"
     #	openssl pkeyutl -encrypt -pubin -inkey "${SSL_DIR}/cert.pub" -in "${KPXC_DIR}/conf.tmp" -out "${KPXC_DIR}/conf"
